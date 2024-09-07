@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { hash, compare } from 'bcrypt'
+import TwinBcrypt from 'twin-bcrypt';
 import { config } from '../common/config'
 
 @Injectable()
@@ -13,10 +13,15 @@ export class PasswordService {
   }
 
   validatePassword(password: string, hashedPassword: string): Promise<boolean> {
-    return compare(password, hashedPassword)
+    return TwinBcrypt.compare(password, hashedPassword, null, function(result) {
+      return result;
+    });
   }
 
+
   hashPassword(password: string): Promise<string> {
-    return hash(password, this.bcryptSaltRounds)
+    return TwinBcrypt.hash(password, this.bcryptSaltRounds, function(hash) {
+      return hash;
+    })
   }
 }

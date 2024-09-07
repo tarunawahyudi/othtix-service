@@ -2,10 +2,9 @@ import { config } from '$lib/config'
 import { currencyPrefix } from '$lib/formatter/currency.formatter'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { fail } from '@sveltejs/kit'
-import { hash } from 'bcrypt'
+import TwinBcrypt from 'twin-bcrypt'
 import { redisClient } from '../../../lib/server/database/redis'
 import type { Actions, PageServerLoad } from './$types'
-
 export const load = (async ({ locals }) => {
 	const withdrawFee = {
 		id: 0,
@@ -59,13 +58,15 @@ export const actions: Actions = {
 				})
 			}
 
-			locals.user = await prisma.user.update({
-				where: { id: locals.user.id },
-				data: {
-					...data,
-					password: password ? await hash(password, config.security.bcryptSaltOrRound) : undefined
-				}
-			})
+			locals.user = TwinBcrypt.hash(password, config.security.bcryptSaltOrRound, async function(hash) {
+				await prisma.user.update({
+					where: { id: locals.user.id },
+					data: {
+						...data,
+						password: password ? hash : undefined
+					}
+				})
+			});
 
 			return { success: true, message: 'Profile edit success.' }
 		} catch (e) {

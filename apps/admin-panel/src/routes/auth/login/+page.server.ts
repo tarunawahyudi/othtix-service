@@ -2,7 +2,7 @@ import { config } from '$lib/config'
 import { redisClient } from '$lib/server/database/redis'
 import { Group } from '$lib/server/entities/users/group.enum'
 import { fail, redirect } from '@sveltejs/kit'
-import { compare } from 'bcrypt'
+import TwinBcrypt from 'twin-bcrypt'
 import jwt from 'jsonwebtoken'
 import type { Actions, PageServerLoad, RequestEvent } from './$types'
 
@@ -28,7 +28,10 @@ export const actions: Actions = {
 
 		const passwordValid = await validatePassword(password, user.password)
 
-		if (!passwordValid) return fail(401, { message: 'Wrong password', username })
+		if (passwordValid === false) {
+			console.log('Wrong password');
+			return fail(401, { message: 'Wrong password', username })
+		}
 
 		const refreshToken = jwt.sign(
 			{ sub: user.id, username: user.username, email: user.email },
@@ -62,5 +65,13 @@ export const actions: Actions = {
 }
 
 function validatePassword(password: string, hashedPassword: string): Promise<boolean> {
-	return compare(password, hashedPassword)
+	return new Promise((resolve) => {
+		TwinBcrypt.compare(password, hashedPassword, function(result: boolean){
+			if (result === true) {
+				return resolve(true);
+			}
+
+			return resolve(false);
+		});
+	})
 }

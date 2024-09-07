@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client'
-import { hash } from 'bcrypt'
+import TwinBcrypt from 'twin-bcrypt';
 
 const prisma = new PrismaClient()
 
@@ -18,7 +18,7 @@ async function main() {
 
   await prisma.user
     .create({
-      data: { ...data, password: await hash(data.password, 10) },
+      data: { ...data, password: await TwinBcrypt(data.password, 10, function(hash: any){ return hash }) },
     })
     .then((superadmin) => {
       console.info({

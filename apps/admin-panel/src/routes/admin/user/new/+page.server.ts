@@ -2,7 +2,7 @@ import { config } from '$lib/config'
 import type { $Enums } from '@prisma/client'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { error, fail, redirect } from '@sveltejs/kit'
-import { hash } from 'bcrypt'
+import TwinBcrypt from 'twin-bcrypt'
 import type { Actions, PageServerLoad } from './$types'
 
 export const load = (async ({ locals }) => {
@@ -40,14 +40,16 @@ export const actions: Actions = {
 
 			const groups = group ? (group.split(',') as $Enums.UserGroup[]) : undefined
 
-			await prisma.user.create({
-				data: {
-					...data,
-					groups,
-					activated: activate === 'true',
-					password: await hash(password, config.security.bcryptSaltOrRound)
-				}
-			})
+			TwinBcrypt.hash(password, config.security.bcryptSaltOrRound, async function(hash) {
+				await prisma.user.create({
+					data: {
+						...data,
+						groups,
+						activated: activate === 'true',
+						password: hash
+					}
+				})
+			});
 		} catch (e) {
 			if (e instanceof PrismaClientKnownRequestError && e.code === 'P2002') {
 				return fail(409, { success: false, message: 'Username/Email has been registered', ...form })
