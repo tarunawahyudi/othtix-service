@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common'
-import TwinBcrypt from 'twin-bcrypt';
+import { Injectable, Logger } from '@nestjs/common'
+import * as TwinBcrypt from 'twin-bcrypt';
+
 import { config } from '../common/config'
 
 @Injectable()
@@ -13,15 +14,22 @@ export class PasswordService {
   }
 
   validatePassword(password: string, hashedPassword: string): Promise<boolean> {
-    return TwinBcrypt.compare(password, hashedPassword, null, function(result) {
-      return result;
-    });
+
+    return new Promise((resolve, reject) => {
+      TwinBcrypt.compare(password, hashedPassword, null, function(hash: any) {
+        if (hash) resolve(hash);
+        else reject();
+      });
+    })
   }
 
-
   hashPassword(password: string): Promise<string> {
-    return TwinBcrypt.hash(password, this.bcryptSaltRounds, function(hash) {
-      return hash;
+    Logger.log(TwinBcrypt);
+    return new Promise((resolve, reject) => {
+      TwinBcrypt.hash(password, this.bcryptSaltRounds, function(hash: string | PromiseLike<string>) {
+        if (hash) resolve(hash);
+        else reject();
+      })
     })
   }
 }
