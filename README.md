@@ -1,4 +1,4 @@
-# BackTix Service
+# OthTix Service
 
 <img src="https://raw.githubusercontent.com/ikhsan3adi/backtix-support/main/assets/logo.svg" width="200" alt="BackTix Logo">
 

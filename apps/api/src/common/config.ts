@@ -1,4 +1,4 @@
-import { config as conf } from '@backtix-service/config'
+import { config as conf } from '@othtix-service/config'
 
 export const config = {
   ...conf,

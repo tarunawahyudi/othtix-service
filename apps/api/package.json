@@ -1,5 +1,5 @@
 {
-  "name": "@backtix-service/api",
+  "name": "@othtix-service/api",
   "version": "0.0.1",
   "author": "",
   "private": true,
@@ -20,7 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@backtix-service/config": "^1.0.0",
+    "@othtix-service/config": "^1.0.0",
     "@nestjs-modules/mailer": "^1.9.1",
     "@nestjs/cache-manager": "^2.1.1",
     "@nestjs/common": "^10.0.0",

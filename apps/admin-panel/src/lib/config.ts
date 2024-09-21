@@ -1,4 +1,4 @@
-import { config } from '@backtix-service/config'
+import { config } from '@othtix-service/config'
 
 export { config }
 
