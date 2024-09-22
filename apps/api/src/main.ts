@@ -9,7 +9,9 @@ import { openApiConfig } from './open-api.config'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true })
-  app.use(
+  app.setGlobalPrefix('api', { exclude: ['file/(.*)'] })
+
+    app.use(
     helmet({
       crossOriginEmbedderPolicy: false,
       crossOriginResourcePolicy: { policy: 'cross-origin' },
@@ -20,7 +22,6 @@ async function bootstrap() {
   if (metadata) await SwaggerModule.loadPluginMetadata(metadata)
   SwaggerModule.setup('api/docs', app, document)
 
-  app.setGlobalPrefix('api', { exclude: ['file/(.*)'] })
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
