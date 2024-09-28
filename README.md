@@ -1,6 +1,6 @@
 # OthTix Service
 
-<img src="https://raw.githubusercontent.com/ikhsan3adi/backtix-support/main/assets/logo.svg" width="200" alt="BackTix Logo">
+<img src="https://raw.githubusercontent.com/tarunawahyudi/othtix/da4b8fdcd96e8b0b56affbe714a901511797a451/assets/logo.svg" width="200" alt="OthTix Logo">
 
 | | |
 |-|-|
