@@ -10,7 +10,6 @@
 		Drawer,
 		Footer,
 		FooterCopyright,
-		FooterIcon,
 		NavBrand,
 		NavLi,
 		NavUl,
@@ -73,10 +72,6 @@
 	}
 
 	const navLinks = [
-		{
-			href: 'https://github.com/ikhsan3adi/backtix',
-			name: 'GitHub'
-		},
 		{
 			href: data?.links.openApi,
 			name: 'OpenAPI Docs'
@@ -361,11 +356,7 @@
 					<div class="sm:flex sm:items-center sm:justify-between">
 						<FooterCopyright href="/" by="" />
 						<div class="mt-4 flex space-x-6 sm:mt-0 sm:justify-center rtl:space-x-reverse">
-							<FooterIcon href="https://github.com/ikhsan3adi">
-								<GithubSolid
-									class="h-4 w-4 text-gray-500 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white"
-								/>
-							</FooterIcon>
+						
 						</div>
 					</div>
 				</Footer>

@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@othtix-service/config": "file:",
     "dotenv": "^16.3.1"
   }
 }

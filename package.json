@@ -24,7 +24,8 @@
     "packages/config"
   ],
   "dependencies": {
-    "@prisma/client": "^5.7.1"
+    "@prisma/client": "^5.7.1",
+    "othtix-service": "file:"
   },
   "devDependencies": {
     "@ts-safeql/eslint-plugin": "^2.0.3",
