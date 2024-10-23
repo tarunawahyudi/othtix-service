@@ -72,7 +72,7 @@ export class PurchaseService {
           orderId,
           eventOwnerId,
           totalRevenue:
-            Number(grossAmount) + (balanceUsed ? Number(balanceUsed) : 0),
+            Math.floor(Number(grossAmount)) + (balanceUsed ? Number(balanceUsed) : 0),
           buyerUserId: userId,
           balanceDeducted: balanceUsed ? Number(balanceUsed) : undefined,
         })
