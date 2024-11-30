@@ -3,7 +3,7 @@ import {
   ForbiddenException,
   HttpException,
   Injectable,
-  InternalServerErrorException,
+  InternalServerErrorException, Logger,
   NotFoundException,
 } from '@nestjs/common'
 import { Prisma, PrismaClient } from '@prisma/client'
@@ -23,6 +23,7 @@ import { PurchaseRepository } from './purchase.repository'
 
 @Injectable()
 export class PurchaseService {
+  private readonly logger = new Logger(PurchaseService.name)
   constructor(
     private purchaseRepository: PurchaseRepository,
     private paymentService: PaymentService,
@@ -39,7 +40,12 @@ export class PurchaseService {
    * Used by payment gateway
    */
   async notifyTicketOrder(notification: PaymentNotificationDto) {
-    if (!notification) throw new BadRequestException()
+    if (!notification) {
+      this.logger.error("No notification data provided")
+      throw new BadRequestException()
+    }
+
+    this.logger.debug(`Notification received: ${JSON.stringify(notification)}`);
     this.compareSignatureKey(notification)
 
     const orderId = notification.order_id
@@ -67,6 +73,7 @@ export class PurchaseService {
           },
         })
 
+        this.logger.debug(`Completing order: ${orderId}`);
         return await this.completeSuccessTicketOrder({
           tx,
           orderId,
@@ -79,8 +86,10 @@ export class PurchaseService {
       }
 
       if (transactionStatus === 'capture' && fraudStatus === 'accept') {
+        this.logger.log(`Transaction captured and accepted for order: ${orderId} | ${transactionStatus}`);
         await completeOrder()
       } else if (transactionStatus === 'settlement') {
+        this.logger.log(`Transaction settled for order: ${orderId} | ${transactionStatus}`);
         await completeOrder()
       } else if (
         transactionStatus === 'cancel' ||
@@ -92,6 +101,10 @@ export class PurchaseService {
         //   where: { orderId, status: 'PENDING' },
         //   data: { status: 'CANCELLED' },
         // })
+
+        this.logger.warn(
+          `Transaction ${transactionStatus} for order: ${orderId}. Cleaning up...`
+        );
 
         await tx.purchase.deleteMany({
           where: { orderId, status: 'PENDING' },
